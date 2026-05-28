@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LaTeX Copier</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup">
+      <header class="popup__header">
+        <h1>LaTeX Copier</h1>
+        <label class="switch">
+          <input id="enabled" type="checkbox">
+          <span></span>
+        </label>
+      </header>
+
+      <label class="field">
+        <span>触发方式</span>
+        <select id="clickMode">
+          <option value="single">单击</option>
+          <option value="double">双击</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>复制格式</span>
+        <select id="pasteMode">
+          <option value="latex-delimited">LaTeX（带 $）</option>
+          <option value="latex-plain">LaTeX（纯文本）</option>
+          <option value="mathml">MathML</option>
+        </select>
+      </label>
+
+      <div class="row-field">
+        <span>提问时间轴</span>
+        <label class="switch">
+          <input id="timelineEnabled" type="checkbox">
+          <span></span>
+        </label>
+      </div>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </main>
+
+    <script src="../shared/defaults.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

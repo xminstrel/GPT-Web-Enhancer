@@ -1,0 +1,17 @@
+{
+  "name": "chatgpt-latex-click-copier",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome MV3 extension scaffold for copying rendered ChatGPT LaTeX formulas on click.",
+  "scripts": {
+    "check": "node scripts/check-extension.js"
+  },
+  "keywords": [
+    "chrome-extension",
+    "chatgpt",
+    "latex",
+    "katex",
+    "mathjax"
+  ],
+  "license": "MIT"
+}
