@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "ChatGPT LaTeX Click Copier",
+  "name": "GPT Web Enhancer",
   "version": "0.1.0",
-  "description": "Click rendered LaTeX formulas in ChatGPT to copy their original TeX source.",
+  "description": "Improve the ChatGPT web experience with one-click formula copying and prompt timeline navigation.",
   "permissions": ["storage", "clipboardWrite", "scripting", "tabs"],
   "host_permissions": [
     "https://chatgpt.com/*",
@@ -12,7 +12,7 @@
     "service_worker": "src/background/service-worker.js"
   },
   "action": {
-    "default_title": "LaTeX Copier",
+    "default_title": "GPT Web Enhancer",
     "default_popup": "src/popup/popup.html"
   },
   "content_scripts": [
@@ -24,7 +24,8 @@
       "js": [
         "src/shared/defaults.js",
         "src/content/math-extractor.js",
-        "src/content/content.js"
+        "src/content/content.js",
+        "src/content/exporter.js"
       ],
       "css": ["src/content/content.css"],
       "run_at": "document_idle"

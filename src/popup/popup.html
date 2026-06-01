@@ -3,43 +3,99 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LaTeX Copier</title>
+    <title>GPT Web Enhancer</title>
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
     <main class="popup">
       <header class="popup__header">
-        <h1>LaTeX Copier</h1>
-        <label class="switch">
-          <input id="enabled" type="checkbox">
-          <span></span>
+        <div>
+          <p class="eyebrow">ChatGPT 增强</p>
+          <h1>GPT Web Enhancer</h1>
+        </div>
+        <label class="switch" title="启用扩展">
+          <input id="enabled" type="checkbox" aria-label="启用扩展">
+          <span aria-hidden="true"></span>
         </label>
       </header>
 
-      <label class="field">
-        <span>触发方式</span>
-        <select id="clickMode">
-          <option value="single">单击</option>
-          <option value="double">双击</option>
-        </select>
-      </label>
+      <section class="panel" aria-label="公式复制设置">
+        <div class="panel__title">
+          <span>公式复制</span>
+          <small>KaTeX / MathJax</small>
+        </div>
 
-      <label class="field">
-        <span>复制格式</span>
-        <select id="pasteMode">
-          <option value="latex-delimited">LaTeX（带 $）</option>
-          <option value="latex-plain">LaTeX（纯文本）</option>
-          <option value="mathml">MathML</option>
-        </select>
-      </label>
-
-      <div class="row-field">
-        <span>提问时间轴</span>
-        <label class="switch">
-          <input id="timelineEnabled" type="checkbox">
-          <span></span>
+        <label class="field">
+          <span>触发方式</span>
+          <select id="clickMode">
+            <option value="single">单击复制</option>
+            <option value="double">双击复制</option>
+          </select>
         </label>
-      </div>
+
+        <label class="field">
+          <span>复制格式</span>
+          <select id="pasteMode">
+            <option value="latex-delimited">LaTeX，带 $ / $$</option>
+            <option value="latex-plain">LaTeX，纯文本</option>
+            <option value="mathml">MathML</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="panel panel--compact" aria-label="导航设置">
+        <div class="row-field">
+          <span>提问时间轴</span>
+          <label class="switch" title="显示提问时间轴">
+            <input id="timelineEnabled" type="checkbox" aria-label="显示提问时间轴">
+            <span aria-hidden="true"></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="导出工具">
+        <div class="panel__title">
+          <span>导出工具</span>
+          <small>MD / HTML / PDF / PNG</small>
+        </div>
+
+        <div class="export-group">
+          <span>整段对话</span>
+          <div class="button-row">
+            <button type="button" data-export-scope="full" data-export-format="markdown">MD</button>
+            <button type="button" data-export-scope="full" data-export-format="html">HTML</button>
+            <button type="button" data-export-scope="full" data-export-format="pdf">PDF</button>
+          </div>
+        </div>
+
+        <div class="export-group">
+          <span>收藏片段</span>
+          <div class="button-row">
+            <button type="button" data-export-scope="favorites" data-export-format="markdown">MD</button>
+            <button type="button" data-export-scope="favorites" data-export-format="html">HTML</button>
+            <button type="button" data-export-scope="favorites" data-export-format="pdf">PDF</button>
+          </div>
+        </div>
+
+        <div class="export-group">
+          <span>当前问答</span>
+          <div class="button-row">
+            <button type="button" data-export-scope="current" data-export-format="markdown">MD</button>
+            <button type="button" data-export-scope="current" data-export-format="html">HTML</button>
+            <button type="button" data-export-scope="current" data-export-format="pdf">PDF</button>
+            <button type="button" data-export-scope="current" data-export-format="png">PNG</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="本地收藏">
+        <div class="panel__title">
+          <span>本地收藏</span>
+          <button id="refreshFavorites" class="text-button" type="button">刷新</button>
+        </div>
+        <div id="favoriteSummary" class="favorite-summary">读取当前对话收藏...</div>
+        <div id="favoriteList" class="favorite-list" role="list"></div>
+      </section>
 
       <p id="status" class="status" role="status" aria-live="polite"></p>
     </main>

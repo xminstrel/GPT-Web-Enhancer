@@ -7,6 +7,7 @@ const requiredFiles = [
   "src/shared/defaults.js",
   "src/content/math-extractor.js",
   "src/content/content.js",
+  "src/content/exporter.js",
   "src/content/content.css",
   "src/background/service-worker.js",
   "src/popup/popup.html",
@@ -44,4 +45,4 @@ for (const cssFile of manifest.content_scripts[0].css || []) {
   assert(fs.existsSync(path.join(root, cssFile)), `Missing content css: ${cssFile}`);
 }
 
-console.log("Extension scaffold looks good.");
+console.log("GPT Web Enhancer extension looks good.");

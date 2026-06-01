@@ -1,17 +1,22 @@
 {
-  "name": "chatgpt-latex-click-copier",
+  "name": "gpt-web-enhancer",
   "version": "0.1.0",
   "private": true,
-  "description": "Chrome MV3 extension scaffold for copying rendered ChatGPT LaTeX formulas on click.",
+  "description": "Chrome MV3 extension for improving the ChatGPT web experience with formula copying and prompt timeline navigation.",
   "scripts": {
     "check": "node scripts/check-extension.js"
   },
   "keywords": [
     "chrome-extension",
     "chatgpt",
+    "gpt",
+    "web-enhancer",
     "latex",
     "katex",
-    "mathjax"
+    "mathjax",
+    "navigation",
+    "export",
+    "markdown"
   ],
   "license": "MIT"
 }

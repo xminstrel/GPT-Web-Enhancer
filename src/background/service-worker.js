@@ -91,7 +91,8 @@ function injectIntoTab(tabId) {
       files: [
         "src/shared/defaults.js",
         "src/content/math-extractor.js",
-        "src/content/content.js"
+        "src/content/content.js",
+        "src/content/exporter.js"
       ]
     },
     () => {
@@ -99,3 +100,17 @@ function injectIntoTab(tabId) {
     }
   );
 }
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (!message || message.type !== "gpt-web-enhancer-open-tab") {
+    return false;
+  }
+
+  chrome.tabs.create({ url: message.url, active: true }, () => {
+    sendResponse({
+      ok: !chrome.runtime.lastError,
+      error: chrome.runtime.lastError?.message || ""
+    });
+  });
+  return true;
+});

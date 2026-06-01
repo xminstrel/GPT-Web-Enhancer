@@ -276,7 +276,12 @@
   }
 
   function getQuestionText(anchor) {
-    const source = anchor.querySelector("[data-message-author-role='user']") || anchor;
+    const source = (anchor.querySelector("[data-message-author-role='user']") || anchor).cloneNode(true);
+
+    for (const ignored of source.querySelectorAll("[data-gpt-export-ignore]")) {
+      ignored.remove();
+    }
+
     return String(source.innerText || source.textContent || "")
       .replace(/\s+/g, " ")
       .trim();
@@ -712,16 +717,16 @@
 
     const text = extractor.format(result, settings.pasteMode);
     if (!text) {
-      showToast("Selected format unavailable", result.element, true);
+      showToast("当前格式不可用", result.element, true);
       return;
     }
 
     try {
       await writeClipboard(text);
-      showToast("LaTeX copied", result.element, false);
+      showToast("公式已复制", result.element, false);
     } catch (error) {
       console.error("[latex-copy] Clipboard write failed", error);
-      showToast("Copy failed", result.element, true);
+      showToast("复制失败", result.element, true);
     }
   }
 

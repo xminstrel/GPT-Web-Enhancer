@@ -147,6 +147,236 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
   opacity: 1;
 }
 
+.gpt-export-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px;
+  border: 1px solid rgba(15, 122, 122, 0.16);
+  border-radius: 8px;
+  background: rgba(247, 250, 252, 0.86);
+  box-shadow: 0 8px 24px rgba(18, 35, 45, 0.08);
+  opacity: 0.3;
+  transition: opacity 140ms ease, border-color 140ms ease;
+}
+
+.gpt-export-toolbar:hover,
+.gpt-export-toolbar:focus-within {
+  border-color: rgba(15, 122, 122, 0.36);
+  opacity: 1;
+}
+
+.gpt-export-toolbar button {
+  min-width: 28px;
+  height: 26px;
+  padding: 0 7px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #31414b;
+  cursor: pointer;
+  font: 700 11px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.gpt-export-toolbar button:hover,
+.gpt-export-toolbar button:focus-visible {
+  border-color: rgba(15, 122, 122, 0.28);
+  background: rgba(15, 122, 122, 0.1);
+  outline: none;
+}
+
+.gpt-export-toolbar button.is-active {
+  border-color: rgba(15, 122, 122, 0.42);
+  background: rgba(15, 122, 122, 0.16);
+  color: #0b5f68;
+}
+
+.gpt-export-toast {
+  position: fixed;
+  right: 22px;
+  bottom: 24px;
+  z-index: 2147483647;
+  max-width: min(360px, calc(100vw - 40px));
+  padding: 9px 12px;
+  border-radius: 7px;
+  background: rgba(20, 27, 24, 0.94);
+  color: #ffffff;
+  font: 12px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.gpt-export-toast[data-state="error"] {
+  background: rgba(135, 35, 35, 0.96);
+}
+
+.gpt-export-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gpt-export-highlight {
+  outline: 2px solid rgba(15, 122, 122, 0.42);
+  outline-offset: 5px;
+  border-radius: 8px;
+  transition: outline-color 180ms ease;
+}
+
+.gpt-favorites-dock {
+  position: fixed;
+  right: 22px;
+  bottom: 70px;
+  z-index: 2147483646;
+  width: min(320px, calc(100vw - 44px));
+  color: #172026;
+  font: 13px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  pointer-events: none;
+}
+
+.gpt-favorites-dock__trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid rgba(15, 122, 122, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #172026;
+  box-shadow: 0 10px 28px rgba(18, 35, 45, 0.18);
+  cursor: pointer;
+  font: 700 12px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  pointer-events: auto;
+}
+
+.gpt-favorites-dock__trigger strong {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #0f7a7a;
+  color: #ffffff;
+  font-size: 11px;
+}
+
+.gpt-favorites-dock:not(.has-favorites) .gpt-favorites-dock__trigger strong {
+  background: #7d8b94;
+}
+
+.gpt-favorites-dock__panel {
+  display: none;
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 122, 122, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 18px 44px rgba(18, 35, 45, 0.22);
+  pointer-events: auto;
+}
+
+.gpt-favorites-dock.is-open .gpt-favorites-dock__panel {
+  display: block;
+}
+
+.gpt-favorites-dock__panel header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(15, 122, 122, 0.12);
+  font-weight: 750;
+}
+
+.gpt-favorites-dock__panel header button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #52616b;
+  cursor: pointer;
+  font: 700 18px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.gpt-favorites-dock__panel header button:hover,
+.gpt-favorites-dock__panel header button:focus-visible {
+  background: rgba(15, 122, 122, 0.1);
+  color: #0b5f68;
+  outline: none;
+}
+
+.gpt-favorites-dock__list {
+  display: grid;
+  gap: 8px;
+  max-height: min(360px, calc(100vh - 190px));
+  overflow: auto;
+  padding: 10px;
+}
+
+.gpt-favorites-dock__item {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  border: 1px solid rgba(220, 229, 234, 0.92);
+  border-radius: 8px;
+  background: #f9fbfc;
+}
+
+.gpt-favorites-dock__question {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #172026;
+  cursor: pointer;
+  font: 700 12px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-align: left;
+}
+
+.gpt-favorites-dock__question:hover,
+.gpt-favorites-dock__question:focus-visible {
+  color: #0b5f68;
+  outline: none;
+}
+
+.gpt-favorites-dock__item p,
+.gpt-favorites-dock__empty {
+  margin: 0;
+  color: #63717c;
+  font-size: 12px;
+}
+
+.gpt-favorites-dock__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.gpt-favorites-dock__actions button {
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid rgba(15, 122, 122, 0.18);
+  border-radius: 6px;
+  background: #ffffff;
+  color: #31414b;
+  cursor: pointer;
+  font: 700 11px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.gpt-favorites-dock__actions button:hover,
+.gpt-favorites-dock__actions button:focus-visible {
+  border-color: rgba(15, 122, 122, 0.36);
+  background: rgba(15, 122, 122, 0.1);
+  outline: none;
+}
+
 @media (prefers-color-scheme: dark) {
   .latex-copy-timeline__track {
     background: rgba(150, 160, 170, 0.2);
@@ -163,5 +393,69 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
   .latex-copy-timeline__node.is-active {
     border-color: rgba(220, 226, 232, 0.9);
     background: #4c5661;
+  }
+
+  .gpt-export-toolbar {
+    border-color: rgba(72, 193, 188, 0.2);
+    background: rgba(24, 31, 36, 0.88);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+  }
+
+  .gpt-export-toolbar button {
+    color: #d8e4e8;
+  }
+
+  .gpt-export-toolbar button:hover,
+  .gpt-export-toolbar button:focus-visible,
+  .gpt-export-toolbar button.is-active {
+    border-color: rgba(72, 193, 188, 0.38);
+    background: rgba(72, 193, 188, 0.14);
+    color: #7ee3dc;
+  }
+
+  .gpt-favorites-dock {
+    color: #edf5f7;
+  }
+
+  .gpt-favorites-dock__trigger,
+  .gpt-favorites-dock__panel {
+    border-color: rgba(72, 193, 188, 0.22);
+    background: rgba(24, 31, 36, 0.96);
+    color: #edf5f7;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  }
+
+  .gpt-favorites-dock__panel header {
+    border-bottom-color: rgba(72, 193, 188, 0.16);
+  }
+
+  .gpt-favorites-dock__panel header button,
+  .gpt-favorites-dock__item p,
+  .gpt-favorites-dock__empty {
+    color: #9eabb4;
+  }
+
+  .gpt-favorites-dock__item {
+    border-color: rgba(72, 193, 188, 0.18);
+    background: rgba(32, 40, 46, 0.95);
+  }
+
+  .gpt-favorites-dock__question,
+  .gpt-favorites-dock__actions button {
+    color: #edf5f7;
+  }
+
+  .gpt-favorites-dock__actions button {
+    border-color: rgba(72, 193, 188, 0.18);
+    background: rgba(16, 20, 23, 0.72);
+  }
+
+  .gpt-favorites-dock__question:hover,
+  .gpt-favorites-dock__question:focus-visible,
+  .gpt-favorites-dock__actions button:hover,
+  .gpt-favorites-dock__actions button:focus-visible,
+  .gpt-favorites-dock__panel header button:hover,
+  .gpt-favorites-dock__panel header button:focus-visible {
+    color: #7ee3dc;
   }
 }
