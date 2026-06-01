@@ -18,10 +18,12 @@
   ].join(",");
   const EXPORT_IGNORE_SELECTOR = "[data-gpt-export-ignore]";
   const FAVORITE_PREFIX = "gpt-web-enhancer:favorites:";
+  const DOCK_POSITION_KEY = "gpt-web-enhancer:favorites-dock-position";
   let toolbarTimer = 0;
   let exportToastTimer = 0;
   let favoritesDock = null;
   let favoritesDockOpen = false;
+  let favoritesDockDragged = false;
   const favoriteMemoryStore = new Map();
 
   function normalizeText(value) {
@@ -232,6 +234,105 @@
       }
     } catch (error) {
       // Keep the session fallback when the page blocks storage.
+    }
+  }
+
+  function getStoredValue(key) {
+    try {
+      if (globalScope.localStorage) {
+        return globalScope.localStorage.getItem(key);
+      }
+    } catch (error) {
+      // Fall through to the memory store when page storage is blocked.
+    }
+
+    return favoriteMemoryStore.get(key) || "";
+  }
+
+  function setStoredValue(key, value) {
+    favoriteMemoryStore.set(key, value);
+
+    try {
+      if (globalScope.localStorage) {
+        globalScope.localStorage.setItem(key, value);
+      }
+    } catch (error) {
+      // Keep the session fallback when the page blocks storage.
+    }
+  }
+
+  function removeStoredValue(key) {
+    favoriteMemoryStore.delete(key);
+
+    try {
+      if (globalScope.localStorage) {
+        globalScope.localStorage.removeItem(key);
+      }
+    } catch (error) {
+      // Keep the session fallback when the page blocks storage.
+    }
+  }
+
+  function readDockPosition() {
+    try {
+      const parsed = JSON.parse(getStoredValue(DOCK_POSITION_KEY) || "null");
+      if (
+        parsed &&
+        Number.isFinite(parsed.left) &&
+        Number.isFinite(parsed.top)
+      ) {
+        return parsed;
+      }
+    } catch (error) {
+      return null;
+    }
+
+    return null;
+  }
+
+  function clampDockPosition(left, top, dock) {
+    const rect = dock.getBoundingClientRect();
+    const margin = 12;
+    const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+    const maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
+
+    return {
+      left: Math.min(maxLeft, Math.max(margin, left)),
+      top: Math.min(maxTop, Math.max(margin, top))
+    };
+  }
+
+  function applyDockPosition(dock) {
+    const position = readDockPosition();
+
+    if (!position) {
+      dock.classList.remove("is-custom-position");
+      dock.style.left = "";
+      dock.style.top = "";
+      dock.style.right = "";
+      dock.style.bottom = "";
+      return;
+    }
+
+    const clamped = clampDockPosition(position.left, position.top, dock);
+    dock.classList.add("is-custom-position");
+    dock.style.left = `${clamped.left}px`;
+    dock.style.top = `${clamped.top}px`;
+    dock.style.right = "auto";
+    dock.style.bottom = "auto";
+  }
+
+  function saveDockPosition(dock) {
+    const rect = dock.getBoundingClientRect();
+    const clamped = clampDockPosition(rect.left, rect.top, dock);
+    setStoredValue(DOCK_POSITION_KEY, JSON.stringify(clamped));
+  }
+
+  function resetDockPosition() {
+    removeStoredValue(DOCK_POSITION_KEY);
+
+    if (favoritesDock) {
+      applyDockPosition(favoritesDock);
     }
   }
 
@@ -742,26 +843,96 @@
     favoritesDock.className = "gpt-favorites-dock";
     favoritesDock.setAttribute("data-gpt-export-ignore", "true");
     favoritesDock.innerHTML = [
-      "<button class=\"gpt-favorites-dock__trigger\" type=\"button\">",
+      "<button class=\"gpt-favorites-dock__trigger\" type=\"button\" data-dock-drag-handle=\"true\" title=\"点击打开收藏夹，拖动调整位置\">",
       "<span>收藏夹</span>",
       "<strong>0</strong>",
       "</button>",
       "<section class=\"gpt-favorites-dock__panel\" aria-label=\"本地收藏\">",
-      "<header>",
+      "<header data-dock-drag-handle=\"true\">",
       "<span>本地收藏</span>",
-      "<button type=\"button\" data-favorite-action=\"close\" aria-label=\"关闭收藏夹\">×</button>",
+      "<div class=\"gpt-favorites-dock__header-actions\">",
+      "<button type=\"button\" data-favorite-action=\"reset-position\" title=\"重置位置\" aria-label=\"重置收藏夹位置\">↺</button>",
+      "<button type=\"button\" data-favorite-action=\"close\" title=\"关闭\" aria-label=\"关闭收藏夹\">×</button>",
+      "</div>",
       "</header>",
       "<div class=\"gpt-favorites-dock__list\"></div>",
       "</section>"
     ].join("");
 
     favoritesDock.querySelector(".gpt-favorites-dock__trigger").addEventListener("click", () => {
+      if (favoritesDockDragged) {
+        favoritesDockDragged = false;
+        return;
+      }
+
       favoritesDockOpen = !favoritesDockOpen;
       renderFavoritesDock();
     });
     favoritesDock.addEventListener("click", handleFavoritesDockClick);
     document.body.appendChild(favoritesDock);
+    applyDockPosition(favoritesDock);
+    attachFavoritesDockDrag(favoritesDock);
     return favoritesDock;
+  }
+
+  function attachFavoritesDockDrag(dock) {
+    let dragState = null;
+
+    function onPointerMove(event) {
+      if (!dragState) {
+        return;
+      }
+
+      const deltaX = event.clientX - dragState.startX;
+      const deltaY = event.clientY - dragState.startY;
+      if (!dragState.moved && Math.hypot(deltaX, deltaY) < 4) {
+        return;
+      }
+
+      dragState.moved = true;
+      favoritesDockDragged = true;
+      dock.classList.add("is-dragging", "is-custom-position");
+      const next = clampDockPosition(dragState.left + deltaX, dragState.top + deltaY, dock);
+      dock.style.left = `${next.left}px`;
+      dock.style.top = `${next.top}px`;
+      dock.style.right = "auto";
+      dock.style.bottom = "auto";
+    }
+
+    function stopDrag() {
+      if (!dragState) {
+        return;
+      }
+
+      if (dragState.moved) {
+        saveDockPosition(dock);
+      }
+
+      dock.classList.remove("is-dragging");
+      dragState = null;
+      window.removeEventListener("pointermove", onPointerMove, true);
+      window.removeEventListener("pointerup", stopDrag, true);
+      window.removeEventListener("pointercancel", stopDrag, true);
+    }
+
+    dock.addEventListener("pointerdown", (event) => {
+      const handle = event.target.closest("[data-dock-drag-handle]");
+      if (!handle || event.button !== 0 || event.target.closest("[data-favorite-action]")) {
+        return;
+      }
+
+      const rect = dock.getBoundingClientRect();
+      dragState = {
+        startX: event.clientX,
+        startY: event.clientY,
+        left: rect.left,
+        top: rect.top,
+        moved: false
+      };
+      window.addEventListener("pointermove", onPointerMove, true);
+      window.addEventListener("pointerup", stopDrag, true);
+      window.addEventListener("pointercancel", stopDrag, true);
+    });
   }
 
   function createFavoriteDockItem(favorite) {
@@ -838,6 +1009,12 @@
     if (action === "close") {
       favoritesDockOpen = false;
       renderFavoritesDock();
+      return;
+    }
+
+    if (action === "reset-position") {
+      resetDockPosition();
+      showExportToast("收藏夹位置已重置");
       return;
     }
 

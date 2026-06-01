@@ -227,21 +227,24 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
 
 .gpt-favorites-dock {
   position: fixed;
-  left: 22px;
-  right: auto;
+  right: 112px;
   bottom: 24px;
   z-index: 2147483646;
-  width: min(320px, calc(100vw - 44px));
+  width: min(320px, calc(100vw - 136px));
   color: #172026;
   font: 13px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   pointer-events: none;
+}
+
+.gpt-favorites-dock.is-custom-position {
+  width: min(320px, calc(100vw - 24px));
 }
 
 .gpt-favorites-dock__trigger {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-right: auto;
+  margin-left: auto;
   min-height: 34px;
   padding: 0 11px;
   border: 1px solid rgba(15, 122, 122, 0.24);
@@ -252,6 +255,12 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
   cursor: pointer;
   font: 700 12px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   pointer-events: auto;
+  user-select: none;
+  touch-action: none;
+}
+
+.gpt-favorites-dock__trigger:hover {
+  border-color: rgba(15, 122, 122, 0.38);
 }
 
 .gpt-favorites-dock__trigger strong {
@@ -292,10 +301,23 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
   gap: 12px;
   padding: 10px 12px;
   border-bottom: 1px solid rgba(15, 122, 122, 0.12);
+  cursor: grab;
   font-weight: 750;
+  user-select: none;
+  touch-action: none;
 }
 
-.gpt-favorites-dock__panel header button {
+.gpt-favorites-dock.is-dragging .gpt-favorites-dock__trigger,
+.gpt-favorites-dock.is-dragging .gpt-favorites-dock__panel header {
+  cursor: grabbing;
+}
+
+.gpt-favorites-dock__header-actions {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.gpt-favorites-dock__header-actions button {
   display: grid;
   place-items: center;
   width: 24px;
@@ -308,8 +330,8 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
   font: 700 18px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.gpt-favorites-dock__panel header button:hover,
-.gpt-favorites-dock__panel header button:focus-visible {
+.gpt-favorites-dock__header-actions button:hover,
+.gpt-favorites-dock__header-actions button:focus-visible {
   background: rgba(15, 122, 122, 0.1);
   color: #0b5f68;
   outline: none;
@@ -380,10 +402,9 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
 
 @media (max-width: 640px) {
   .gpt-favorites-dock {
-    left: 16px;
-    right: 56px;
+    right: 72px;
     bottom: 18px;
-    width: auto;
+    width: min(280px, calc(100vw - 92px));
   }
 }
 
@@ -439,7 +460,7 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
     border-bottom-color: rgba(72, 193, 188, 0.16);
   }
 
-  .gpt-favorites-dock__panel header button,
+  .gpt-favorites-dock__header-actions button,
   .gpt-favorites-dock__item p,
   .gpt-favorites-dock__empty {
     color: #9eabb4;
@@ -464,8 +485,8 @@ html[data-latex-copy-enabled="true"] mjx-container[display="true"].latex-copy-ho
   .gpt-favorites-dock__question:focus-visible,
   .gpt-favorites-dock__actions button:hover,
   .gpt-favorites-dock__actions button:focus-visible,
-  .gpt-favorites-dock__panel header button:hover,
-  .gpt-favorites-dock__panel header button:focus-visible {
+  .gpt-favorites-dock__header-actions button:hover,
+  .gpt-favorites-dock__header-actions button:focus-visible {
     color: #7ee3dc;
   }
 }
